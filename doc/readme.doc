@@ -1,0 +1,18 @@
+Push Server 简单说明
+
+部署结构：
+　　bin(class和启动脚本)
+		com
+		startup.sh
+		shutdown.sh
+	conf(配置文件)
+		p12file
+		xxxx.xml
+		sys.properties
+		log4j.properties
+	lib(依赖的jar)
+	logs(日志输出)
+　　　
+启动、关闭服务：
+　　　1》启动：/bin/startup.sh
+　　　2》关闭：/bin/shutdown.sh

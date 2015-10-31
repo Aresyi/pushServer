@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://activemq.apache.org/schema/core
+	http://activemq.apache.org/schema/core/activemq-core-5.10.0.xsd">
+
+    <!-- ActiveMQ 连接工厂 -->
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://192.168.254.120:61616"/><!-- 正式服务器:192.168.7.3 测试服务器:192.168.254.120 -->
+    </bean>
+
+    <!-- Spring Caching 连接工厂 -->
+    <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="connectionFactory"/>
+        <property name="sessionCacheSize" value="10"/>
+    </bean>
+
+    <!-- Queue定义 -->
+    <bean id="msgTipPushQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="msgTip"/>
+    </bean>
+
+    <bean id="myMessageConverter" class="com.ydj.common.mq.activemq.MyMessageConverter"/>
+
+    <!-- Spring JMS Template -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="cachingConnectionFactory"/>
+        <property name="messageConverter" ref="myMessageConverter"/>
+    </bean>
+
+    <!-- 使用Spring JmsTemplate的消息生产者 -->
+    <bean id="msgTipProducer" class="com.ydj.common.mq.activemq.MessageTipProducer">
+        <property name="jmsTemplate" ref="jmsTemplate"/>
+        <property name="notifyQueue" ref="msgTipPushQueue"/>
+    </bean>
+    
+
+</beans>

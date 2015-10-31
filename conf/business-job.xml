@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+	
+    <bean id="groupAdminJob" class="com.ydj.pushserver.business.job.GroupAdminJob"/>
+    
+    <bean id="groupAdminJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="groupAdminJob" />
+		<property name="targetMethod" value="start" />
+		<property name="concurrent" value="false" />
+	</bean>
+    
+    <bean id="groupAdminJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="groupAdminJobDetail" />
+		<property name="startDelay">
+			<value>0</value>
+		</property>
+	   <property name="repeatInterval">
+			<value>3600000</value>
+		</property>
+	</bean>
+
+    <!-- ############################### 启动调度   ###############################-->
+    <bean id="start" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+            	 <ref bean="groupAdminJobTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

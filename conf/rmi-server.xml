@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
+
+    <bean id="pushServices" class="com.ydj.pushserver.services.rmi.impl.PushServicesImpl">
+    	<property name="msgTipProducer" ref="msgTipProducer"/>
+    </bean>  
+  
+  	<bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean">
+		<property name="port" value="9797"/>
+	</bean>
+	
+    <bean id="pushServicesExporter" class="org.springframework.remoting.rmi.RmiServiceExporter">  
+        <property name="service" ref="pushServices" />  
+        <property name="serviceName" value="pushServices" />  
+        <property name="serviceInterface" value="com.ydj.pushserver.services.PushServices" />  
+        <!-- <property name="registryPort" value="9898" />  -->
+        <property name="registry" ref="registry"/>  
+    </bean>  
+
+
+</beans>
